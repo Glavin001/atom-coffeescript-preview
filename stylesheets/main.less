@@ -5,9 +5,14 @@
  * For more information: https://atom.io/docs/latest/creating-a-package#stylesheets
  */
 
-.yeoman {
-  // The background is loaded from the 'bundle' directory.
-  background-image: url("atom://coffeescript-preview/bundle/yeoman.png");
-  background-position: center center;
-  background-repeat: no-repeat;
+.coffeescript-preview {
+  // background-color: @pane-item-background-color;
+  overflow: scroll;
+  box-sizing: border-box;
+  padding: 0;
+
+  code {
+    padding: 0px;
+    background: none;
+  }
 }

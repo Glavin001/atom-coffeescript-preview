@@ -2,16 +2,20 @@ path = require 'path'
 {$, $$$, ScrollView} = require 'atom'
 coffeescript = require 'coffee-script'
 _ = require 'underscore-plus'
+nsh = require('node-syntaxhighlighter')
+languageJS =  nsh.getLanguage('js')
 
 module.exports =
-class AtomHtmlPreviewView extends ScrollView
-  atom.deserializers.add(this)
+class CoffeePreviewView extends ScrollView
+  atom.deserializers.add(CoffeePreviewView)
 
   @deserialize: (state) ->
-    new AtomHtmlPreviewView(state)
+    new CoffeePreviewView(state)
 
   @content: ->
-    @div class: 'coffeescript-preview native-key-bindings', tabindex: -1
+    @div
+      class: 'coffeescript-preview native-key-bindings'
+      tabindex: -1
 
   constructor: ({@editorId, filePath}) ->
     super
@@ -26,7 +30,7 @@ class AtomHtmlPreviewView extends ScrollView
           @subscribeToFilePath(filePath)
 
   serialize: ->
-    deserializer: 'AtomHtmlPreviewView'
+    deserializer: 'CoffeePreviewView'
     filePath: @getPath()
     editorId: @editorId
 
@@ -80,22 +84,25 @@ class AtomHtmlPreviewView extends ScrollView
       @renderHTMLCode(@editor.getText())
 
   renderHTMLCode: (text) =>
-    js = coffeescript.compile(text)
-    console.log @html
-    c = document.createElement("pre")
-    c.innerHTML = js
-    console.log c, js
-    @html $ c
-    @trigger('coffeescript-preview:html-changed')
+    try
+      js = coffeescript.compile text
+      html = nsh.highlight js, languageJS
+      # console.log html, js
+      @html $ html
+    catch e
+      console.log e
+      return @showError e
+
+    @trigger 'coffeescript-preview:html-changed'
 
   getTitle: ->
     if @editor?
       "#{@editor.getTitle()} Preview"
     else
-      "HTML Preview"
+      "CoffeeScript Preview"
 
   getUri: ->
-    "html-preview://editor/#{@editorId}"
+    "coffee-preview://editor/#{@editorId}"
 
   getPath: ->
     if @editor?
@@ -105,9 +112,28 @@ class AtomHtmlPreviewView extends ScrollView
     failureMessage = result?.message
 
     @html $$$ ->
-      @h2 'Previewing HTML Failed'
-      @h3 failureMessage if failureMessage?
+      @div
+        class: 'coffee-preview-spinner'
+        style: 'text-align: center'
+        =>
+          @span
+            class: 'loading loading-spinner-large inline-block'
+          @div
+            class: 'text-highlight',
+            'Previewing CoffeeScript Failed\u2026'
+            =>
+              @div
+                class: 'text-error'
+                failureMessage if failureMessage?
 
   showLoading: ->
     @html $$$ ->
-      @div class: 'atom-html-spinner', 'Loading HTML Preview\u2026'
+      @div
+        class: 'coffee-preview-spinner'
+        style: 'text-align: center'
+        =>
+          @span
+            class: 'loading loading-spinner-large inline-block'
+          @div
+            class: 'text-highlight',
+            'Loading HTML Preview\u2026'

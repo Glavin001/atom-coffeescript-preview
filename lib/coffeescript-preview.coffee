@@ -7,10 +7,10 @@
 ###
 
 url = require 'url'
-HtmlPreviewView = require './coffeescript-preview-view'
+CoffeePreviewView = require './coffeescript-preview-view'
 
 module.exports =
-  htmlPreviewView: null
+  coffeePreviewView: null
 
   ###
   # This required method is called when your package is activated. It is passed
@@ -38,9 +38,9 @@ module.exports =
         return
 
       if host is 'editor'
-        new HtmlPreviewView(editorId: pathname.substring(1))
+        new CoffeePreviewView(editorId: pathname.substring(1))
       else
-        new HtmlPreviewView(filePath: pathname)
+        new CoffeePreviewView(filePath: pathname)
 
 
   ###
@@ -74,7 +74,7 @@ module.exports =
 
     previousActivePane = atom.workspace.getActivePane()
     atom.workspace.open(uri, split: 'right', searchAllPanes: true)
-    .done (htmlPreviewView) ->
-      if htmlPreviewView instanceof HtmlPreviewView
-        htmlPreviewView.renderHTML()
+    .done (coffeePreviewView) ->
+      if coffeePreviewView instanceof CoffeePreviewView
+        coffeePreviewView.renderHTML()
         previousActivePane.activate()
