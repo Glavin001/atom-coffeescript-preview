@@ -10,7 +10,7 @@ Or Settings/Preferences ➔ Packages ➔ Search for `coffeescript-preview`
 
 ## Screenshot
 
-![screenshot](screenshot.png)
+![screenshot](https://raw.githubusercontent.com/Glavin001/atom-coffeescript-preview/master/screenshot.png)
 
 ## Features
 
