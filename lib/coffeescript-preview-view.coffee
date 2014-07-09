@@ -125,6 +125,9 @@ class CoffeePreviewView extends ScrollView
               @div
                 class: 'text-error'
                 failureMessage if failureMessage?
+          @div
+            class: 'text-warning'
+            result?.stack
 
   showLoading: ->
     @html $$$ ->

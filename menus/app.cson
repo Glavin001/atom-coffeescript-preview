@@ -8,7 +8,7 @@
     'submenu': [
       'label': 'CoffeeScript Preview'
       'submenu': [
-        { 'label': 'Toggle Yeoman background', 'command': 'coffeescript-preview:toggleBackground' }
+        { 'label': 'Toggle CoffeeScript Preview', 'command': 'coffeescript-preview:toggle' }
       ]
     ]
   }

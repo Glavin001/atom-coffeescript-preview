@@ -11,5 +11,5 @@
 #   - https://atom.io/docs/latest/advanced/keymaps
 ###
 
-'.workspace':
-  'ctrl-alt-y': 'coffeescript-preview:toggleBackground'
+# '.workspace':
+#     'ctrl-alt-y': 'coffeescript-preview:toggle'

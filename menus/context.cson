@@ -4,4 +4,4 @@
 
 'context-menu':
   '.workspace':
-    'Toggle Yeoman background': 'coffeescript-preview:toggleBackground'
+    'Toggle CoffeeScript Preview': 'coffeescript-preview:toggle'
