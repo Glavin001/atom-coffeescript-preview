@@ -5,6 +5,7 @@
   "description": "Preview what your CoffeeScript will look like as JavaScript",
   "license": "MIT",
   "private": true,
+  "activationEvents": ["coffeescript-preview:toggle"],
   "repository": {
     "type": "git",
     "url": "https://github.com/Glavin001/atom-coffeescript-preview.git"
