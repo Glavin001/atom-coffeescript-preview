@@ -17,6 +17,7 @@ Or Settings/Preferences ➔ Packages ➔ Search for `coffeescript-preview`
 - [x] Preview CoffeeScript as JavaScript in tab
 - [x] Live updating of preview
 - [x] Shows loading and error messages
+- [x] [Updates on Tab Change](https://github.com/Glavin001/atom-coffeescript-preview/issues/3)
 
 [npm]: https://www.npmjs.org/package/generator-atom-package
 [atom-doc]: https://atom.io/docs/latest/creating-a-package "Official documentation"

@@ -29,6 +29,19 @@ class CoffeePreviewView extends ScrollView
         @subscribe atom.packages.once 'activated', =>
           @subscribeToFilePath(filePath)
 
+    # Update on Tab Change
+    atom.workspaceView.on 'pane-container:active-pane-item-changed', =>
+      updateOnTabChange =
+        atom.config.get 'coffeescript-preview.updateOnTabChange'
+      if updateOnTabChange
+        currEditor = atom.workspace.getActiveEditor()
+        if currEditor?
+          grammar = currEditor.getGrammar().name
+          if grammar is "CoffeeScript" or grammar is "CofffeeScript (Literate)"
+            #console.log grammar
+            @editor = currEditor
+            @changeHandler()
+
   serialize: ->
     deserializer: 'CoffeePreviewView'
     filePath: @getPath()
@@ -68,15 +81,15 @@ class CoffeePreviewView extends ScrollView
 
   handleEvents: ->
 
-    changeHandler = =>
-      @renderHTML()
-      pane = atom.workspace.paneForUri(@getUri())
-      if pane? and pane isnt atom.workspace.getActivePane()
-        pane.activateItem(this)
-
     if @editor?
-      @subscribe(@editor.getBuffer(), 'contents-modified', changeHandler)
+      @subscribe(@editor.getBuffer(), 'contents-modified', @changeHandler)
       @subscribe @editor, 'path-changed', => @trigger 'title-changed'
+
+  changeHandler: =>
+    @renderHTML()
+    pane = atom.workspace.paneForUri(@getUri())
+    if pane? and pane isnt atom.workspace.getActivePane()
+      pane.activateItem(this)
 
   renderHTML: ->
     @showLoading()
@@ -87,7 +100,6 @@ class CoffeePreviewView extends ScrollView
     try
       js = coffeescript.compile text
       html = nsh.highlight js, languageJS
-      # console.log html, js
       @html $ html
     catch e
       console.log e
