@@ -1,7 +1,7 @@
 {
   "name": "coffeescript-preview",
   "main": "lib/coffeescript-preview",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Preview what your CoffeeScript will look like as JavaScript",
   "license": "MIT",
   "private": true,
