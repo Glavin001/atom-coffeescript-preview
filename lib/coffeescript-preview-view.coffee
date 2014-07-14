@@ -1,9 +1,7 @@
 path = require 'path'
-{$, $$$, ScrollView} = require 'atom'
+{$, $$$, ScrollView, EditorView} = require 'atom'
 coffeescript = require 'coffee-script'
 _ = require 'underscore-plus'
-nsh = require('node-syntaxhighlighter')
-languageJS =  nsh.getLanguage('js')
 
 module.exports =
 class CoffeePreviewView extends ScrollView
@@ -16,6 +14,11 @@ class CoffeePreviewView extends ScrollView
     @div
       class: 'coffeescript-preview native-key-bindings'
       tabindex: -1
+      =>
+        @div
+          outlet: 'codeBlock'
+        @div
+          outlet: 'message'
 
   constructor: ({@editorId, filePath}) ->
     super
@@ -102,16 +105,40 @@ class CoffeePreviewView extends ScrollView
     if @editor?
       @renderHTMLCode(@editor.getText())
 
-  renderHTMLCode: (text) =>
+  renderHTMLCode: (coffeeText) =>
     try
-      js = coffeescript.compile text
-      html = nsh.highlight js, languageJS
-      @html $ html
+      # Compile CoffeeScript into JavaScript
+      text = coffeescript.compile coffeeText
     catch e
-      console.log e
+      # console.log e
       return @showError e
-
+    # Get grammar for JavaScript
+    grammar = atom.syntax.selectGrammar("source.js", text)
+    # Get codeBlock
+    codeBlock = @codeBlock.find('pre')
+    if codeBlock.length is 0
+      codeBlock = $('<pre/>')
+      @codeBlock.append(codeBlock)
+    # Reset codeBlock
+    codeBlock.empty()
+    codeBlock.addClass('editor-colors')
+    # Render the JavaScript as HTML with syntax Highlighting
+    htmlEolInvisibles = ''
+    for tokens in grammar.tokenizeLines(text).slice(0, -1)
+      lineText = _.pluck(tokens, 'value').join('')
+      codeBlock.append \
+      EditorView.buildLineHtml {tokens, text: lineText, htmlEolInvisibles}
+    # Clear message display
+    @message.empty()
+    # Display the new rendered HTML
     @trigger 'coffeescript-preview:html-changed'
+    # Set font-size from Editor to the Preview
+    vs = atom.workspaceView.getActiveView()
+    v = if vs.length >= 0 then vs[0] else null
+    return if vs is null
+    fontSize = v.style['font-size']
+    if fontSize?
+      codeBlock.css('font-size', fontSize)
 
   syncScroll: ->
     console.log 'Sync scroll'
@@ -138,7 +165,8 @@ class CoffeePreviewView extends ScrollView
   showError: (result) ->
     failureMessage = result?.message
 
-    @html $$$ ->
+    @codeBlock.empty()
+    @message.html $$$ ->
       @div
         class: 'coffee-preview-spinner'
         style: 'text-align: center'
@@ -157,7 +185,9 @@ class CoffeePreviewView extends ScrollView
             result?.stack
 
   showLoading: ->
-    @html $$$ ->
+
+    @codeBlock.empty()
+    @message.html $$$ ->
       @div
         class: 'coffee-preview-spinner'
         style: 'text-align: center'
