@@ -52,6 +52,10 @@ class CoffeePreviewView extends ScrollView
             @trigger 'title-changed'
             @changeHandler()
 
+    # Update on font-size change
+    atom.config.observe 'editor.fontSize', () =>
+      @changeHandler()
+
   serialize: ->
     deserializer: 'CoffeePreviewView'
     filePath: @getPath()
@@ -133,10 +137,7 @@ class CoffeePreviewView extends ScrollView
     # Display the new rendered HTML
     @trigger 'coffeescript-preview:html-changed'
     # Set font-size from Editor to the Preview
-    vs = atom.workspaceView.getActiveView()
-    v = if vs.length >= 0 then vs[0] else null
-    return if vs is null
-    fontSize = v.style['font-size']
+    fontSize = atom.config.get('editor.fontSize')
     if fontSize?
       codeBlock.css('font-size', fontSize)
 
