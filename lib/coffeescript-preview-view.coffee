@@ -40,6 +40,8 @@ class CoffeePreviewView extends ScrollView
           if grammar is "CoffeeScript" or grammar is "CofffeeScript (Literate)"
             #console.log grammar
             @editor = currEditor
+            @editorId = @editor.id
+            @trigger 'title-changed'
             @changeHandler()
 
   serialize: ->
