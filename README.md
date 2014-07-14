@@ -8,16 +8,19 @@ apm install coffeescript-preview
 
 Or Settings/Preferences ➔ Packages ➔ Search for `coffeescript-preview`
 
-## Screenshot
-
-![screenshot](https://raw.githubusercontent.com/Glavin001/atom-coffeescript-preview/master/screenshot.png)
-
 ## Features
 
 - [x] Preview CoffeeScript as JavaScript in tab
 - [x] Live updating of preview
 - [x] Shows loading and error messages
 - [x] [Updates on Tab Change](https://github.com/Glavin001/atom-coffeescript-preview/issues/3)
+- [x] [Highlights using active Atom theme](https://github.com/Glavin001/atom-coffeescript-preview/issues/5)
+
+## Screenshots
+
+![screenshot](https://raw.githubusercontent.com/Glavin001/atom-coffeescript-preview/master/screenshot.png)
+
+![screencapture](https://cloud.githubusercontent.com/assets/1885333/3576573/99212e10-0b93-11e4-8cd5-9da29e9230dd.gif)
 
 [npm]: https://www.npmjs.org/package/generator-atom-package
 [atom-doc]: https://atom.io/docs/latest/creating-a-package "Official documentation"
