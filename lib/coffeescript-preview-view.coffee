@@ -87,7 +87,6 @@ class CoffeePreviewView extends ScrollView
     null
 
   handleEvents: ->
-
     if @editor?
       @subscribe(@editor.getBuffer(), 'contents-modified', @changeHandler)
       @subscribe @editor, 'path-changed', => @trigger 'title-changed'
@@ -113,6 +112,15 @@ class CoffeePreviewView extends ScrollView
       return @showError e
 
     @trigger 'coffeescript-preview:html-changed'
+
+  syncScroll: ->
+    console.log 'Sync scroll'
+    editorView = atom.workspaceView.getActiveView()
+    if editorView.getEditor?() is @editor
+      scrollView = editorView.scrollView
+      height = scrollView[0].scrollHeight
+      y = scrollView.scrollTop()
+
 
   getTitle: ->
     if @editor?
