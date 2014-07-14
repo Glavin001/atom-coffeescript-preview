@@ -12,7 +12,7 @@ CoffeePreviewView = require './coffeescript-preview-view'
 module.exports =
   configDefaults:
     updateOnTabChange: true
-  
+
   coffeePreviewView: null
 
   ###

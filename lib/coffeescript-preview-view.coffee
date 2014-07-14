@@ -38,9 +38,14 @@ class CoffeePreviewView extends ScrollView
         if currEditor?
           grammar = currEditor.getGrammar().name
           if grammar is "CoffeeScript" or grammar is "CofffeeScript (Literate)"
-            #console.log grammar
+            # Stop watching for events on current Editor
+            @unsubscribe()
+            # Switch to new editor
             @editor = currEditor
             @editorId = @editor.id
+            # Start watching editors on new editor
+            @handleEvents()
+            # Trigger update
             @trigger 'title-changed'
             @changeHandler()
 
