@@ -23,22 +23,6 @@ class CoffeePreviewView extends ScrollView
   constructor: () ->
     super
 
-    # console.log @editorId
-
-    if not @editorId?
-      activeEditor = atom.workspace.getActiveEditor()
-      @editorId = activeEditor?.id
-      # console.log activeEditor, @editorId
-
-    if @editorId?
-      @resolveEditor(@editorId)
-    # else
-    #   if atom.workspace?
-    #     @subscribeToFilePath(filePath)
-    #   else
-    #     @subscribe atom.packages.once 'activated', =>
-    #       @subscribeToFilePath(filePath)
-
     # Update on Tab Change
     atom.workspaceView.on \
     'pane-container:active-pane-item-changed', @handleTabChanges
@@ -50,6 +34,7 @@ class CoffeePreviewView extends ScrollView
     # Setup debounced renderer
     atom.config.observe 'coffeescript-preview.refreshDebouncePeriod', \
     (wait) =>
+      # console.log "update debounce to #{wait} ms"
       @debouncedRenderHTMLCode = _.debounce @renderHTMLCode.bind(@), wait
 
   serialize: ->
@@ -107,7 +92,6 @@ class CoffeePreviewView extends ScrollView
           # Start watching editors on new editor
           @handleEvents()
           # Trigger update
-          @trigger 'title-changed'
           @changeHandler()
 
   handleEvents: ->
@@ -122,12 +106,21 @@ class CoffeePreviewView extends ScrollView
       pane.activateItem(this)
 
   renderHTML: ->
-    @showLoading()
     if @editor?
-      @debouncedRenderHTMLCode()
+      if @text() is ""
+        @forceRenderHTML()
+      else
+        @debouncedRenderHTMLCode()
+
+  forceRenderHTML: ->
+    if @editor?
+      @renderHTMLCode()
 
   renderHTMLCode: () =>
-    # console.log 'renderHTMLCode'
+    @showLoading()
+    # Update Title
+    @trigger 'title-changed'
+    # Start preview processing
     coffeeText = @editor.getText()
     try
       # Compile CoffeeScript into JavaScript
