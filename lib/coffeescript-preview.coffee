@@ -12,6 +12,7 @@ CoffeePreviewView = require './coffeescript-preview-view'
 module.exports =
   configDefaults:
     updateOnTabChange: true
+    refreshDebouncePeriod: 100
 
   coffeePreviewView: null
 
@@ -63,7 +64,6 @@ module.exports =
     return unless editor?
     uri = "coffeescript-preview://editor"
     previewPane = atom.workspace.paneForUri(uri)
-    console.log previewPane
     if previewPane
       previewPane.destroyItem(previewPane.itemForUri(uri))
       return

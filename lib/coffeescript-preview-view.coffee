@@ -47,6 +47,11 @@ class CoffeePreviewView extends ScrollView
     atom.config.observe 'editor.fontSize', () =>
       @changeHandler()
 
+    # Setup debounced renderer
+    atom.config.observe 'coffeescript-preview.refreshDebouncePeriod', \
+    (wait) =>
+      @debouncedRenderHTMLCode = _.debounce @renderHTMLCode.bind(@), wait
+
   serialize: ->
     deserializer: 'CoffeePreviewView'
     filePath: @getPath()
@@ -87,7 +92,6 @@ class CoffeePreviewView extends ScrollView
     null
 
   handleTabChanges: =>
-    console.log 'changed tab'
     updateOnTabChange =
       atom.config.get 'coffeescript-preview.updateOnTabChange'
     if updateOnTabChange
@@ -120,9 +124,11 @@ class CoffeePreviewView extends ScrollView
   renderHTML: ->
     @showLoading()
     if @editor?
-      @renderHTMLCode(@editor.getText())
+      @debouncedRenderHTMLCode()
 
-  renderHTMLCode: (coffeeText) =>
+  renderHTMLCode: () =>
+    # console.log 'renderHTMLCode'
+    coffeeText = @editor.getText()
     try
       # Compile CoffeeScript into JavaScript
       text = coffeescript.compile coffeeText
