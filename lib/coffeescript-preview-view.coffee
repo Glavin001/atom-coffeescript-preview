@@ -20,37 +20,28 @@ class CoffeePreviewView extends ScrollView
         @div
           outlet: 'message'
 
-  constructor: ({@editorId, filePath}) ->
+  constructor: () ->
     super
+
+    # console.log @editorId
+
+    if not @editorId?
+      activeEditor = atom.workspace.getActiveEditor()
+      @editorId = activeEditor?.id
+      # console.log activeEditor, @editorId
 
     if @editorId?
       @resolveEditor(@editorId)
-    else
-      if atom.workspace?
-        @subscribeToFilePath(filePath)
-      else
-        @subscribe atom.packages.once 'activated', =>
-          @subscribeToFilePath(filePath)
+    # else
+    #   if atom.workspace?
+    #     @subscribeToFilePath(filePath)
+    #   else
+    #     @subscribe atom.packages.once 'activated', =>
+    #       @subscribeToFilePath(filePath)
 
     # Update on Tab Change
-    atom.workspaceView.on 'pane-container:active-pane-item-changed', =>
-      updateOnTabChange =
-        atom.config.get 'coffeescript-preview.updateOnTabChange'
-      if updateOnTabChange
-        currEditor = atom.workspace.getActiveEditor()
-        if currEditor?
-          grammar = currEditor.getGrammar().name
-          if grammar is "CoffeeScript" or grammar is "CofffeeScript (Literate)"
-            # Stop watching for events on current Editor
-            @unsubscribe()
-            # Switch to new editor
-            @editor = currEditor
-            @editorId = @editor.id
-            # Start watching editors on new editor
-            @handleEvents()
-            # Trigger update
-            @trigger 'title-changed'
-            @changeHandler()
+    atom.workspaceView.on \
+    'pane-container:active-pane-item-changed', @handleTabChanges
 
     # Update on font-size change
     atom.config.observe 'editor.fontSize', () =>
@@ -63,6 +54,8 @@ class CoffeePreviewView extends ScrollView
 
   destroy: ->
     @unsubscribe()
+    atom.workspaceView.off \
+    'pane-container:active-pane-item-changed', @handleTabChanges
 
   subscribeToFilePath: (filePath) ->
     @trigger 'title-changed'
@@ -93,9 +86,29 @@ class CoffeePreviewView extends ScrollView
       return editor if editor.id?.toString() is editorId.toString()
     null
 
+  handleTabChanges: =>
+    console.log 'changed tab'
+    updateOnTabChange =
+      atom.config.get 'coffeescript-preview.updateOnTabChange'
+    if updateOnTabChange
+      currEditor = atom.workspace.getActiveEditor()
+      if currEditor?
+        grammar = currEditor.getGrammar().name
+        if grammar is "CoffeeScript" or grammar is "CofffeeScript (Literate)"
+          # Stop watching for events on current Editor
+          @unsubscribe()
+          # Switch to new editor
+          @editor = currEditor
+          @editorId = @editor.id
+          # Start watching editors on new editor
+          @handleEvents()
+          # Trigger update
+          @trigger 'title-changed'
+          @changeHandler()
+
   handleEvents: ->
     if @editor?
-      @subscribe(@editor.getBuffer(), 'contents-modified', @changeHandler)
+      @subscribe @editor.getBuffer(), 'contents-modified', @changeHandler
       @subscribe @editor, 'path-changed', => @trigger 'title-changed'
 
   changeHandler: =>
@@ -157,7 +170,7 @@ class CoffeePreviewView extends ScrollView
       "CoffeeScript Preview"
 
   getUri: ->
-    "coffee-preview://editor/#{@editorId}"
+    "coffeescript-preview://editor"
 
   getPath: ->
     if @editor?

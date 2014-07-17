@@ -22,8 +22,8 @@ module.exports =
   # your package is started (like setting up DOM elements or binding events).
   ###
   activate: (state) ->
-    console.log 'activate(state)'
-    console.log state
+    # console.log 'activate(state)'
+    # console.log state
     atom.workspaceView.command 'coffeescript-preview:toggle', =>
       @toggle()
 
@@ -32,19 +32,13 @@ module.exports =
         {protocol, host, pathname} = url.parse(uriToOpen)
       catch error
         return
-
       return unless protocol is 'coffeescript-preview:'
-
       try
         pathname = decodeURI(pathname) if pathname
       catch error
         return
-
-      if host is 'editor'
-        new CoffeePreviewView(editorId: pathname.substring(1))
-      else
-        new CoffeePreviewView(filePath: pathname)
-
+      # Create and show preview!
+      new CoffeePreviewView()
 
   ###
   # This optional method is called when the window is shutting down, allowing
@@ -67,14 +61,12 @@ module.exports =
   toggle: ->
     editor = atom.workspace.getActiveEditor()
     return unless editor?
-
-    uri = "coffeescript-preview://editor/#{editor.id}"
-
+    uri = "coffeescript-preview://editor"
     previewPane = atom.workspace.paneForUri(uri)
+    console.log previewPane
     if previewPane
       previewPane.destroyItem(previewPane.itemForUri(uri))
       return
-
     previousActivePane = atom.workspace.getActivePane()
     atom.workspace.open(uri, split: 'right', searchAllPanes: true)
     .done (coffeePreviewView) ->
