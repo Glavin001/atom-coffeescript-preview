@@ -12,7 +12,7 @@ class CoffeePreviewView extends ScrollView
 
   @content: ->
     @div
-      class: 'coffeescript-preview native-key-bindings'
+      class: 'coffeescript-preview native-key-bindings editor editor-colors'
       tabindex: -1
       =>
         @div
