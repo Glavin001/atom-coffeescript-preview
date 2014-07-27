@@ -1,5 +1,12 @@
 # [CoffeeScript Preview for Atom](https://github.com/Glavin001/atom-coffeescript-preview)
 
+---
+
+### *DEPRECATED*: Use [`Preview` for Atom](https://github.com/Glavin001/atom-preview) which supports CoffeeScript and many, many more!
+### *All future development will be on the `Preview` package.* Please report new issues [there](https://github.com/Glavin001/atom-preview/issues).
+
+---
+
 Atom Package: https://atom.io/packages/coffeescript-preview
 
 ```bash
