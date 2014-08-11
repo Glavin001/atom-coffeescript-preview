@@ -8,6 +8,7 @@
 
 url = require 'url'
 CoffeePreviewView = require './coffeescript-preview-view'
+DeprecationView = require './deprecation-view.coffee'
 
 module.exports =
   configDefaults:
@@ -28,6 +29,11 @@ module.exports =
     atom.workspaceView.command 'coffeescript-preview:toggle', =>
       @toggle()
 
+    # Display Deprecation warning
+    @deprecationView = new DeprecationView()
+    atom.workspaceView.appendToTop @deprecationView
+    console.log @deprecationView
+    
     atom.workspace.registerOpener (uriToOpen) ->
       try
         {protocol, host, pathname} = url.parse(uriToOpen)
